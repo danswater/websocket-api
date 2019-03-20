@@ -2,11 +2,13 @@
 
 Related blog [AWS Lambda Websockets](https://medium.com/@chrissullivan.dev/aws-lambda-websockets-9f10f667154f)
 
-[@lawcket/websocket](https://github.com/icarus-sullivan/lawcket/tree/master/packages/websocket)
+### packages
 
-[@lawcket/body-parser](https://github.com/icarus-sullivan/lawcket/tree/master/packages/body-parser)
+[@lawcket/websocket](https://github.com/icarus-sullivan/lawcket/tree/master/packages/websocket) - A pluggable API Gateway Lambda wrapper that mimics server websockets
 
-[@lawcket/dynamo](https://github.com/icarus-sullivan/lawcket/tree/master/packages/dynamo)
+[@lawcket/body-parser](https://github.com/icarus-sullivan/lawcket/tree/master/packages/body-parser) - Automatically parse incoming base64 or stringified json
 
-[@lawcket/publisher](https://github.com/icarus-sullivan/lawcket/tree/master/packages/publisher)
+[@lawcket/dynamo](https://github.com/icarus-sullivan/lawcket/tree/master/packages/dynamo) - Hooks into connect and close events to sync connections to Dynamo
+
+[@lawcket/publisher](https://github.com/icarus-sullivan/lawcket/tree/master/packages/publisher) - Injects a send method during the message event. Used to send data to the client
 
