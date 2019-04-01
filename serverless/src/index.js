@@ -1,36 +1,31 @@
-const DynamoPlugin = require('@lawcket/dynamo');
-const publisherMiddleware = require('@lawcket/publisher');
-const bodyParser = require('@lawcket/body-parser');
-const LambdaWebSocket = require('@lawcket/websocket');
+const lambdaWebsocket = require('@lawcket/websocket');
 
-const dynamoPlugin = new DynamoPlugin({
-  tableName: process.env.CONNECTIONS_TABLE,
-  additionalSyncFields: {
-    channel: '#general',
-  },
-});
+const authMiddleware = (event) => {
+  console.log('authorizing middleware');
+  return event;
+}
 
-const lambdaSocket = new LambdaWebSocket({
-  middleware: [bodyParser, publisherMiddleware],
-  plugins: [
-    dynamoPlugin,
-  ],
-});
+const dynamoSyncPlugin = (event, connection) => {
+  console.log('syncing dynamo', connection);
+  if (connection.event === 'close') {
+    // remove dynamo record
+  }
+  if (connection.event === 'connect') {
+    // store connection to dynamo
+  }
+}
 
-lambdaSocket.on('connect', async ({ headers, requestContext }) => {
-  // do authorization here with headers. If unauthorized throw an error.
-  console.log('client connected', requestContext.connectionId);
-});
-
-lambdaSocket.on('message', async ({ body, send }) => {
-  console.log('client said', body);
-  await send({ message: 'hello from server' });
-});
-
-lambdaSocket.on('close', async (event) => {
-  console.log('client closed', event.requestContext.connectionId);
-});
+const handler = async (event, connection, publish) => {
+  console.log(`Connection: ${JSON.stringify(connection, null, 2)}`);
+  // publish is only available during a message event
+  if (connection.event === 'message' && publish) {
+    await publish({ message: 'hello from server' });
+  }
+};
 
 module.exports = {
-  default: lambdaSocket.createHandler(),
+  default: lambdaWebsocket(handler, { 
+    plugins: [dynamoSyncPlugin],
+    middleware: [authMiddleware]
+  }),
 };
